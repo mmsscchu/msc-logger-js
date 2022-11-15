@@ -1,23 +1,55 @@
-import moment from 'moment';
+import DateTime from "./datetime";
+import Stack from './stack';
+import LogOptions from "./logOptions";
+import {LogLevel, LogLevels} from "./logLevels";
 
 export default class Logger{
-    private readonly loggerName : string
-    private loggerOption : object;
+    private loggerName : string
+    private loggerOption : LogOptions;
+    private arrayPrepareStackTrace: any;
 
-    constructor(loggerName : string, loggerOption? : object) {
+    private dateTime: DateTime;
+    private stack: Stack;
+
+    constructor(loggerName : string, loggerOption? : LogOptions) {
         this.loggerName = loggerName
-        this.loggerOption = {} ?? Object.assign({}, loggerOption)
+        this.loggerOption = loggerOption
+        this.arrayPrepareStackTrace = (err, stack) => { return stack }
+
+        this.dateTime = new DateTime();
+        this.stack = new Stack();
     }
-    getLoggerName(){
+    getName(){
         return this.loggerName
     }
-    private print(option: LogLevel, message: string, ...args: any[]){
+    private print(logLevel: LogLevel, message: string, ...args: any[]){
+        let loggerName = this.loggerName;
+        let dateString : string = this.dateTime.now()
+        let stackString : string = this.stack.getStackData();
+        let logMessage : string = `[${dateString}][${logLevel.text}][${loggerName}] ${message}\n${stackString}`
 
-        let dateString : string = moment().format('YYYY-MM-DD hh:mm:ss');
-        let logMessage : string = `[${dateString}][${option.text}] ${message}`
+        if(this.loggerOption.color){
+            console.log(`%c${logMessage}`, `color:${logLevel.color}`);
+        }else{
+            console.log(logMessage)
+        }
 
-        console.log(`%c${logMessage}`, `color:${option.color}`);
-        console.debug(`%c${logMessage}`, `color:${option.color}`)
+
+       /* const priorPrepareStackTrace = Error.prepareStackTrace
+        Error.prepareStackTrace = this.arrayPrepareStackTrace
+        const stack:any = (new Error()).stack
+        Error.prepareStackTrace = priorPrepareStackTrace
+        console.log(stack)
+        console.dir(stack);
+
+        console.log(stack[0].getFunctionName())
+        console.log(stack[0].getFileName())
+        console.log(stack[0].getLineNumber())
+        console.log(new Error().stack.split("\n"));
+
+        console.log(stack[1].getFunctionName())
+        console.log(stack[1].getFileName())
+        console.log(stack[1].getLineNumber())*/
     }
     debug(message: string, ...args: any[]){
         this.print(LogLevels.LOG_LEVEL_DEBUG, message, args);
@@ -33,31 +65,5 @@ export default class Logger{
     }
     error(message: string, ...args: any[]){
         this.print(LogLevels.LOG_LEVEL_ERROR, message, args);
-    }
-}
-class LogLevel{
-    text : string;
-    color : string;
-}
-class LogLevels{
-    public static LOG_LEVEL_DEBUG : LogLevel = {
-        text : 'DEBUG',
-        color : '#915CEF'
-    }
-    public static LOG_LEVEL_TRACE : LogLevel = {
-        text : 'TRACE',
-        color : '#36A4FF'
-    }
-    public static LOG_LEVEL_INFO : LogLevel = {
-        text : 'INFO',
-        color : '#00CC88'
-    }
-    public static LOG_LEVEL_WARN : LogLevel = {
-        text : 'WARN',
-        color : '#FF7D4A'
-    }
-    public static LOG_LEVEL_ERROR : LogLevel = {
-        text : 'ERROR',
-        color : '#FF454D'
     }
 }

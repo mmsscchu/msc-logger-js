@@ -3,6 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src>
+
+    </script>
+    <script>
+        window.onload = function(){
+            mscLogger.setOptions({color : false})
+
+            let log = mscLogger.getLogger('')
+            log.debug('1')
+            log.trace('2')
+            log.info('3')
+            log.warn('4')
+            log.error('5')
+        }
+    </script>
 </head>
 <body>
 <button id='button'>myButton</button>
