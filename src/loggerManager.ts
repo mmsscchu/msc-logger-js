@@ -1,5 +1,5 @@
 import Logger from "./logger";
-import LogOptions from "./logOptions";
+import {LogOptions} from "./logOptions";
 
 export default class LoggerManager{
     private _loggers = {} as {key: string, logger: Logger}

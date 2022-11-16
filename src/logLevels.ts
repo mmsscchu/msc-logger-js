@@ -25,7 +25,7 @@ class LogLevels {
         level : 1
     }
 }
-class LogLevel{
+abstract class LogLevel{
     text : string
     color : string
     level: number

@@ -1,12 +1,21 @@
 import DateTime from "./datetime";
 import Stack from './stack';
-import LogOptions from "./logOptions";
+import {LogOptions, LogAppenderOption, ConsoleAppenderOption} from "./logOptions";
 import {LogLevel, LogLevels} from "./logLevels";
+import ConsoleAppender from "./appender/consoleAppender";
+import FileAppender from "./appender/fileAppender";
+import PrintAppender from "./appender/printAppender";
 
 export default class Logger{
     private loggerName : string
     private loggerOption : LogOptions;
-    private arrayPrepareStackTrace: any;
+    private loggerAppenderOption : LogAppenderOption
+
+    private appender : {
+        file?: FileAppender
+        console? : ConsoleAppender
+        print? : PrintAppender
+    } = {}
 
     private dateTime: DateTime;
     private stack: Stack;
@@ -14,56 +23,41 @@ export default class Logger{
     constructor(loggerName : string, loggerOption? : LogOptions) {
         this.loggerName = loggerName
         this.loggerOption = loggerOption
-        this.arrayPrepareStackTrace = (err, stack) => { return stack }
+        this.loggerAppenderOption = loggerOption.appender
 
+        if(this.loggerAppenderOption.console){
+            this.appender.console = new ConsoleAppender(this.loggerName, this.loggerAppenderOption.console);
+        }
+        if(this.loggerAppenderOption.file){
+            this.appender.file = new FileAppender(this.loggerName, this.loggerAppenderOption.file);
+        }
+        if(this.loggerAppenderOption.print){
+            this.appender.print = new PrintAppender(this.loggerName, this.loggerAppenderOption.print);
+        }
         this.dateTime = new DateTime();
         this.stack = new Stack();
     }
     getName(){
         return this.loggerName
     }
-    private print(logLevel: LogLevel, message: string, ...args: any[]){
-        let loggerName = this.loggerName;
-        let dateString : string = this.dateTime.now()
-        let stackString : string = this.stack.getStackData();
-        let logMessage : string = `[${dateString}][${logLevel.text}][${loggerName}] ${message}\n${stackString}`
-
-        if(this.loggerOption.color){
-            console.log(`%c${logMessage}`, `color:${logLevel.color}`);
-        }else{
-            console.log(logMessage)
+    private appenderPrint(logLevel: LogLevel, message: string, ...args: any[]){
+        for(let appenderName in this.appender){
+            this.appender[appenderName].print.apply(null, [logLevel, message, ...args]);
         }
-
-
-       /* const priorPrepareStackTrace = Error.prepareStackTrace
-        Error.prepareStackTrace = this.arrayPrepareStackTrace
-        const stack:any = (new Error()).stack
-        Error.prepareStackTrace = priorPrepareStackTrace
-        console.log(stack)
-        console.dir(stack);
-
-        console.log(stack[0].getFunctionName())
-        console.log(stack[0].getFileName())
-        console.log(stack[0].getLineNumber())
-        console.log(new Error().stack.split("\n"));
-
-        console.log(stack[1].getFunctionName())
-        console.log(stack[1].getFileName())
-        console.log(stack[1].getLineNumber())*/
     }
     debug(message: string, ...args: any[]){
-        this.print(LogLevels.LOG_LEVEL_DEBUG, message, args);
+        this.appenderPrint(LogLevels.LOG_LEVEL_DEBUG, message, args);
     }
     trace(message: string, ...args: any[]){
-        this.print(LogLevels.LOG_LEVEL_TRACE, message, args);
+        this.appenderPrint(LogLevels.LOG_LEVEL_TRACE, message, args);
     }
     info(message: string, ...args: any[]){
-        this.print(LogLevels.LOG_LEVEL_INFO, message, args);
+        this.appenderPrint(LogLevels.LOG_LEVEL_INFO, message, args);
     }
     warn(message: string, ...args: any[]){
-        this.print(LogLevels.LOG_LEVEL_WARN, message, args);
+        this.appenderPrint(LogLevels.LOG_LEVEL_WARN, message, args);
     }
     error(message: string, ...args: any[]){
-        this.print(LogLevels.LOG_LEVEL_ERROR, message, args);
+        this.appenderPrint(LogLevels.LOG_LEVEL_ERROR, message, args);
     }
 }

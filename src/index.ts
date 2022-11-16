@@ -1,15 +1,16 @@
 import Logger from "./logger";
 import LoggerManager from "./loggerManager";
-import LoggerOptions from "./logOptions";
+import {LogOptions} from "./logOptions";
 
 export default class MscLoggerJs{
-    private static _defaultOptions: LoggerOptions = {
+    private static _defaultOptions: LogOptions = {
         level : 'INFO',
-        color : false
+        color : false,
+        appender : {}
     }
     private static _loggerManager = new LoggerManager();
 
-    static getLogger(loggerName? : string, options? : LoggerOptions){
+    static getLogger(loggerName? : string, options? : LogOptions){
         options = Object.assign(this._defaultOptions, options);
         return this._loggerManager.getLogger(loggerName, options)
     }

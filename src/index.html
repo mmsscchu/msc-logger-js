@@ -8,7 +8,15 @@
     </script>
     <script>
         window.onload = function(){
-            mscLogger.setOptions({color : false})
+            mscLogger.setOptions({
+                color : false,
+                appender : {
+                    console : {
+                        color : true,
+                        level : 'DEBUG'
+                    }
+                }
+            })
 
             let log = mscLogger.getLogger('')
             log.debug('1')
