@@ -9,7 +9,7 @@ export default class PrintAppender extends DefaultAppender{
 
     print(logLevel: LogLevel, message: string, ...args: any[]): void{
         let loggerName = this._loggerName;
-        let dateString : string = this._dateTime.now()
+        let dateString : string = this._dateTime.formatString()
         let stackString : string = this._stack.getStackData();
         let logMessage : string = `[${dateString}][${logLevel.text}][${loggerName}] ${message}\n${stackString}`
 

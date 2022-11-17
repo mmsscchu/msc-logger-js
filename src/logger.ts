@@ -42,7 +42,8 @@ export default class Logger{
     }
     private appenderPrint(logLevel: LogLevel, message: string, ...args: any[]){
         for(let appenderName in this.appender){
-            this.appender[appenderName].print.apply(null, [logLevel, message, ...args]);
+            let appender = this.appender[appenderName]
+            appender.print.apply(appender, [logLevel, message, ...args]);
         }
     }
     debug(message: string, ...args: any[]){

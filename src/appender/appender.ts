@@ -1,16 +1,16 @@
-import {LogLevel} from "../logLevels";
 import DateTime from "../datetime";
 import Stack from "../stack";
 import {AppenderOption} from "../logOptions";
+import {LogLevel} from "../logLevels";
 
-export default abstract class DefaultAppender{
-    _loggerName : string
-    _appenderOption : AppenderOption;
+export default abstract class DefaultAppender {
+    public _loggerName: string = null;
+    public _appenderOption: AppenderOption;
 
-    _dateTime: DateTime;
-    _stack: Stack;
+    public _dateTime: DateTime;
+    public _stack: Stack;
 
-    protected constructor(loggerName : string, appenderOption? : AppenderOption) {
+    protected constructor(loggerName: string, appenderOption?: AppenderOption) {
         this._loggerName = loggerName
         this._appenderOption = appenderOption
 
@@ -18,5 +18,5 @@ export default abstract class DefaultAppender{
         this._stack = new Stack();
     }
 
-    abstract print(logLevel: LogLevel, message: string, ...args: any[]) :void
+    public abstract print(logLevel: LogLevel, message: string, ...args: any[]): void;
 }

@@ -10,30 +10,44 @@ export default class DateTime {
     public getFormat(){
         return this.format
     }
-    public now(){
-        return this.dateToString(new Date())
+    public formatString(){
+        return this.dateToObject(new Date()).format;
+    }
+    public yyyyMMdd(){
+        return this.dateToObject(new Date()).yyyyMMdd
     }
     private padding(value){
-        return value < 10 ? '0' + value : '' + value
+        return value < 10 ? '0' + value : String(value)
     }
-    private dateToString(dateObject){
-        let year = dateObject.getFullYear();
-        let month = dateObject.getMonth() + 1;
-        let date = dateObject.getDate();
-        let hours = dateObject.getHours();
-        let min = dateObject.getMinutes();
-        let sec = dateObject.getSeconds();
-        let msc = dateObject.getMilliseconds();
+    public dateToObject(dateObject){
+        let year = this.padding(dateObject.getFullYear())
+        let month = this.padding(dateObject.getMonth() + 1)
+        let date = this.padding(dateObject.getDate())
+        let hours = this.padding(dateObject.getHours())
+        let min = this.padding(dateObject.getMinutes())
+        let sec = this.padding(dateObject.getSeconds())
+        let msc = this.padding(dateObject.getMilliseconds())
 
         let message = this.format;
-        message = message.replace('yyyy', this.padding(year));
-        message = message.replace('MM', this.padding(month));
-        message = message.replace('dd', this.padding(date));
-        message = message.replace('HH', this.padding(hours));
-        message = message.replace('mm', this.padding(min));
-        message = message.replace('ss', this.padding(sec));
-        message = message.replace('sss', msc);
+        message = message.replace('yyyy', year)
+        message = message.replace('MM', month)
+        message = message.replace('dd', date)
+        message = message.replace('HH', hours)
+        message = message.replace('mm', min)
+        message = message.replace('ss', sec)
+        message = message.replace('sss', msc)
 
-        return message;
+        return {
+            year : year,
+            month : month,
+            date : date,
+            hours : hours,
+            min : min,
+            sec : sec,
+            msc : msc,
+            yyyyMMdd : year+month+date,
+            HHmmss : min+sec+msc,
+            format : message,
+        };
     }
 }
