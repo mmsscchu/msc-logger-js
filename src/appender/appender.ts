@@ -19,4 +19,5 @@ export default abstract class DefaultAppender {
     }
 
     public abstract print(logLevel: LogLevel, message: string, ...args: any[]): void;
+    public abstract destroy() : void;
 }

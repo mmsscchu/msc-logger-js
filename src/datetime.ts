@@ -46,8 +46,9 @@ export default class DateTime {
             sec : sec,
             msc : msc,
             yyyyMMdd : year+month+date,
-            HHmmss : min+sec+msc,
+            HHmmss : hours+min+sec,
             format : message,
+            dateObject : dateObject
         };
     }
 }

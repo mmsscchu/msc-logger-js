@@ -1,13 +1,28 @@
 import DefaultAppender from "./appender";
 import {LogLevel} from "../logLevels";
 import {PrintAppenderOption} from "../logOptions";
+import ConstanceInfo from "../common/constantInfo";
 
 export default class PrintAppender extends DefaultAppender{
+    private printLoggerName: string
+    private printLayout: Element
+
     constructor(loggerName : string, appenderOption : PrintAppenderOption) {
         super(loggerName, appenderOption);
     }
-
-    print(logLevel: LogLevel, message: string, ...args: any[]): void{
+    private createPrintLayout(){
+        let template = document.createElement('template');
+        template.innerHTML = `
+            <div class="msc-logger-print" id="${ConstanceInfo.NAME+'_'+this.printLoggerName}" name="${this.printLoggerName}">
+                <div class="logger-print-util">
+                    <div class="print-util-tools"></div>
+                    <div class="print-util-filter"></div>
+                </div>
+                <div class="logger-print-logs"></div>
+            </div>`
+        return document.importNode(template, true).firstElementChild;
+    }
+    public print(logLevel: LogLevel, message: string, ...args: any[]): void{
         let loggerName = this._loggerName;
         let dateString : string = this._dateTime.formatString()
         let stackString : string = this._stack.getStackData();
@@ -18,5 +33,8 @@ export default class PrintAppender extends DefaultAppender{
         }else{
             console.log(logMessage)
         }
+    }
+    public destroy(){
+
     }
 }

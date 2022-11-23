@@ -46,6 +46,12 @@ export default class Logger{
             appender.print.apply(appender, [logLevel, message, ...args]);
         }
     }
+    private appenderDestroy(){
+        for(let appenderName in this.appender){
+            let appender = this.appender[appenderName]
+            appender.destroy();
+        }
+    }
     debug(message: string, ...args: any[]){
         this.appenderPrint(LogLevels.LOG_LEVEL_DEBUG, message, args);
     }
@@ -60,5 +66,8 @@ export default class Logger{
     }
     error(message: string, ...args: any[]){
         this.appenderPrint(LogLevels.LOG_LEVEL_ERROR, message, args);
+    }
+    destroy(){
+        this.appenderDestroy();
     }
 }

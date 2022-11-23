@@ -8,7 +8,6 @@ class ConsoleAppender extends DefaultAppender{
     }
 
     public print(logLevel: LogLevel, message: string, ...args: any[]){
-
         let loggerName = this._loggerName;
         let dateString : string = this._dateTime.formatString()
         let stackString : string = this._stack.getStackData();
@@ -19,6 +18,9 @@ class ConsoleAppender extends DefaultAppender{
         }else{
             console.log(logMessage)
         }
+    }
+    public destroy(){
+
     }
 }
 
